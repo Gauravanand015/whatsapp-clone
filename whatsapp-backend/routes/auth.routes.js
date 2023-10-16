@@ -6,7 +6,6 @@ import {
   register,
 } from "../controller/auth.controller.js";
 import trimRequest from "trim-request";
-
 const authRouter = express.Router();
 
 authRouter.route("/register").post(trimRequest.all, register);
