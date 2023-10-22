@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 
 export const createUser = async (userData) => {
   const { name, email, password, picture, status } = userData;
+  console.log("picture", picture);
   // check if fields are empty
   if (!name || !email || !password) {
     throw createHttpError.BadRequest("Please fill all fields");
@@ -31,10 +32,10 @@ export const createUser = async (userData) => {
 
   // check if the user is already exists
   const userEmail = await UserModel.findOne({ email: email });
-  console.log(userEmail);
+  // console.log(userEmail);
   if (userEmail) {
     throw createHttpError.Conflict(
-      "Email already exists, try using different email"
+      "This email address already exists, try using different email"
     );
   }
 
@@ -64,12 +65,13 @@ export const signUser = async (email, password) => {
   const user = await UserModel.findOne({ email: email.toLowerCase() }).lean();
 
   //check if user exist
-  if (!user) throw createHttpError.NotFound("Invalid credentials.");
+  if (!user) throw createHttpError.NotFound("User not found.");
 
   //compare passwords
   let passwordMatches = await bcrypt.compare(password, user.password);
 
-  if (!passwordMatches) throw createHttpError.NotFound("Invalid credentials.");
+  if (!passwordMatches)
+    throw createHttpError.NotFound("Password or email address is wrong.");
 
   return user;
 };

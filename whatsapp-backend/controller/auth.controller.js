@@ -17,7 +17,39 @@ export const register = async (req, res, next) => {
       status,
     });
 
-    res.json(newUser);
+    const accessToken = await generateToken(
+      {
+        usedId: newUser._id,
+      },
+      "1d",
+      process.env.ACCESS_SECRET_KEY
+    );
+
+    const refreshToken = await generateToken(
+      {
+        usedId: newUser._id,
+      },
+      "30d",
+      process.env.REFRESH_SECRET_KEY
+    );
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      path: "/api/v1/auth/refreshToken",
+      maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
+    });
+
+    res.json({
+      message: "Register successful",
+      user: {
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        picture: newUser.picture,
+        status: newUser.status,
+        token: accessToken,
+      },
+    });
   } catch (error) {
     next(error);
   }
