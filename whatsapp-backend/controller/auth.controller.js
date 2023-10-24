@@ -19,7 +19,7 @@ export const register = async (req, res, next) => {
 
     const accessToken = await generateToken(
       {
-        usedId: newUser._id,
+        userId: newUser._id,
       },
       "1d",
       process.env.ACCESS_SECRET_KEY
@@ -27,7 +27,7 @@ export const register = async (req, res, next) => {
 
     const refreshToken = await generateToken(
       {
-        usedId: newUser._id,
+        userId: newUser._id,
       },
       "30d",
       process.env.REFRESH_SECRET_KEY
@@ -63,7 +63,7 @@ export const login = async (req, res, next) => {
 
     const accessToken = await generateToken(
       {
-        usedId: user._id,
+        userId: user._id,
       },
       "1d",
       process.env.ACCESS_SECRET_KEY
@@ -71,7 +71,7 @@ export const login = async (req, res, next) => {
 
     const refreshToken = await generateToken(
       {
-        usedId: user._id,
+        userId: user._id,
       },
       "30d",
       process.env.REFRESH_SECRET_KEY
@@ -118,10 +118,10 @@ export const refreshToken = async (req, res, next) => {
       refreshToken,
       process.env.REFRESH_SECRET_KEY
     );
-    let userId = await findUser(check.usedId);
+    let userId = await findUser(check.userId);
     const accessToken = await generateToken(
       {
-        usedId: userId._id,
+        userId: userId._id,
       },
       "1d",
       process.env.ACCESS_SECRET_KEY

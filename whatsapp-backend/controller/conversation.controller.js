@@ -1,0 +1,55 @@
+import createHttpError from "http-errors";
+import logger from "../config/logger.config.js";
+import { doesConversationExist } from "../services/conversation.service.js";
+import { findUser } from "../services/user.service.js";
+import { createConversation } from "../services/conversation.service.js";
+import { populatedConvoData } from "../services/conversation.service.js";
+import { getUserConversations } from "../services/conversation.service.js";
+
+export const create_open_conversation = async (req, res, next) => {
+  try {
+    const senderId = req.user.userId;
+    const { receiverId } = req.body;
+    // check if receivers exists
+    if (!receiverId) {
+      logger.error("Please provide a receiver id you want to chat with");
+      throw createHttpError.BadGateway("Something went wrong");
+    }
+    const existed_conversation = await doesConversationExist(
+      senderId,
+      receiverId
+    );
+
+    if (existed_conversation) {
+      res.send(existed_conversation);
+    } else {
+      const receiver_user_detail = await findUser(receiverId);
+
+      let convoData = {
+        name: receiver_user_detail.name,
+        isGroup: false,
+        users: [senderId, receiverId],
+      };
+
+      const newConversation = await createConversation(convoData);
+      const populatedConvo = await populatedConvoData(
+        newConversation._id,
+        "users",
+        "-password"
+      );
+      res.send(populatedConvo);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getConversations = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const conversations = await getUserConversations(userId);
+    res.status(200).json(conversations);
+  } catch (error) {
+    next(error);
+  }
+};

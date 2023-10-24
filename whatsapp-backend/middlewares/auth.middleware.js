@@ -2,10 +2,14 @@ import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
 
 export const authentication = async (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
-  if (!token) throw createHttpError.Unauthorized();
+  if (!req.headers["authorization"])
+    return next(createHttpError.Unauthorized());
+  const bearerToken = req.headers["authorization"];
+  const token = bearerToken.split(" ")[1];
   jwt.verify(token, process.env.ACCESS_SECRET_KEY, (err, payload) => {
-    if (err) throw createHttpError.Unauthorized();
+    if (err) {
+      return next(createHttpError.Unauthorized());
+    }
     req.user = payload;
     next();
   });
