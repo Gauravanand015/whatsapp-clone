@@ -14,16 +14,16 @@ const conversationSchema = mongoose.Schema(
     },
     users: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: ObjectId,
         ref: "UserModel",
       },
     ],
     latestMessage: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: ObjectId,
       ref: "MessageModel",
     },
     admin: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: ObjectId,
       ref: "UserModel",
     },
   },

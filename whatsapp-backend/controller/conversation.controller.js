@@ -10,6 +10,7 @@ export const create_open_conversation = async (req, res, next) => {
   try {
     const senderId = req.user.userId;
     const { receiverId } = req.body;
+    console.log("receiverID", receiverId);
     // check if receivers exists
     if (!receiverId) {
       logger.error("Please provide a receiver id you want to chat with");
