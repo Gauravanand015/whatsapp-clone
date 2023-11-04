@@ -127,13 +127,13 @@ export const refreshToken = async (req, res, next) => {
       process.env.ACCESS_SECRET_KEY
     );
     res.json({
-      Access_Token: accessToken,
       user: {
         _id: userId._id,
         name: userId.name,
         email: userId.email,
         picture: userId.picture,
         status: userId.status,
+        token: accessToken,
       },
     });
   } catch (error) {

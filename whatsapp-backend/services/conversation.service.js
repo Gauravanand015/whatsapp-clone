@@ -50,6 +50,7 @@ export const getUserConversations = async (userId) => {
     .populate("users", "-password")
     .populate("admin", "-password")
     .populate("latestMessage")
+    .sort({ updatedAt: -1 })
     .then(async (results) => {
       console.log(results);
       results = await UserModel.populate(results, {
@@ -65,4 +66,17 @@ export const getUserConversations = async (userId) => {
     });
 
   return conversation;
+};
+
+export const updateMessage = async (conversationId, message) => {
+  const updateConvo = await ConversationModel.findByIdAndUpdate(
+    conversationId,
+    {
+      latestMessage: message,
+    }
+  );
+
+  if (!updateConvo)
+    throw createHttpError.BadRequest("Oops....Something went wrong");
+  return updateConvo;
 };
