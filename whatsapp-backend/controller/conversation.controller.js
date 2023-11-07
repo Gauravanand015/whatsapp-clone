@@ -30,6 +30,7 @@ export const create_open_conversation = async (req, res, next) => {
 
       let convoData = {
         name: receiver_user_detail.name,
+        picture: receiver_user_detail.picture,
         isGroup: false,
         users: [senderId, receiverId],
       };

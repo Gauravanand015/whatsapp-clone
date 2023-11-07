@@ -37,6 +37,7 @@ export const register = async (req, res, next) => {
       httpOnly: true,
       path: "/api/v1/auth/refreshToken",
       maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
+      secure: true,
     });
 
     res.json({
@@ -78,6 +79,7 @@ export const login = async (req, res, next) => {
     );
 
     res.cookie("refreshToken", refreshToken, {
+      secure: true,
       httpOnly: true,
       path: "/api/v1/auth/refreshToken",
       maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
