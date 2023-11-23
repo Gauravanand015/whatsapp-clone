@@ -21,7 +21,7 @@ export const populateMessage = async (id) => {
     })
     .populate({
       path: "conversation",
-      select: "name isGroup users",
+      select: "name picture isGroup users",
       model: "ConversationModel",
       populate: {
         path: "users",
@@ -34,7 +34,7 @@ export const populateMessage = async (id) => {
     throw createHttpError.BadRequest(
       "Oops...Something went wrong in populateMessage function!"
     );
-  console.log(chalk.bold(msg));
+  // console.log(chalk.bold(msg));
   return msg;
 };
 

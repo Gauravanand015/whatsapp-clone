@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 
 export const createUser = async (userData) => {
   const { name, email, password, picture, status } = userData;
-  console.log("picture", picture);
+  // console.log("picture", picture);
   // check if fields are empty
   if (!name || !email || !password) {
     throw createHttpError.BadRequest("Please fill all fields");

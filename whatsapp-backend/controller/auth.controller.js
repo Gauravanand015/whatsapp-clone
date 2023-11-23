@@ -113,7 +113,7 @@ export const logout = async (req, res, next) => {
 export const refreshToken = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-    console.log(refreshToken);
+    // console.log(refreshToken);
     if (!refreshToken)
       throw createHttpError.Unauthorized("Please Login First!");
     const check = await verifyUser(

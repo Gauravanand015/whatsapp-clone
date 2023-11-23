@@ -17,13 +17,13 @@ export const doesConversationExist = async (senderId, receiverId) => {
     throw createHttpError.BadRequest(
       "Oops...Something went wrong in doesConversationExist function!"
     );
-  console.log(chalk.blue("convo one", convos));
+  // console.log(chalk.blue("convo one", convos));
   //populate message model
   convos = await UserModel.populate(convos, {
     path: "latestMessage.sender",
     select: "name email picture status", // the properties which i want to get  as result
   });
-  console.log(chalk.yellow("convo two", convos));
+  // console.log(chalk.yellow("convo two", convos));
   return convos[0];
 };
 
@@ -46,7 +46,7 @@ export const populatedConvoData = async (id, fieldsToAdd, fieldsToRemove) => {
     throw createHttpError.BadRequest(
       "Oops...Something went wrong in populatedConvoData function!"
     );
-  console.log(chalk.greenBright(populatedData));
+  // console.log(chalk.greenBright(populatedData));
   return populatedData;
 };
 
@@ -60,7 +60,7 @@ export const getUserConversations = async (userId) => {
     .populate("latestMessage")
     .sort({ updatedAt: -1 })
     .then(async (results) => {
-      console.log(chalk.blueBright(results));
+      // console.log(chalk.blueBright(results));
       results = await UserModel.populate(results, {
         path: "latestMessage.sender",
         select: "name email picture status",
