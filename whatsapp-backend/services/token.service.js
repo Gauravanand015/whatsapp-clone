@@ -7,7 +7,7 @@ export const generateToken = async (payload, expiresIn, secret) => {
 };
 
 export const verifyUser = async (token, secret) => {
-  console.log(token);
+  // console.log(token);
   let result = jwt.verify(token, secret, (err, decoded) => {
     if (err) {
       console.error(err);

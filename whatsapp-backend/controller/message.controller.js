@@ -23,7 +23,7 @@ export const sendMessage = async (req, res, next) => {
       };
       const newMessage = await createMessage(messageData);
 
-      console.log(chalk.red(newMessage));
+      // console.log(chalk.red(newMessage));
 
       const populatedMessage = await populateMessage(newMessage._id);
 

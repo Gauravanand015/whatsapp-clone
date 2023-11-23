@@ -11,7 +11,7 @@ export const create_open_conversation = async (req, res, next) => {
   try {
     const senderId = req.user.userId;
     const { receiverId } = req.body; // to whom i am sending messages
-    console.log("receiverID", receiverId);
+    // console.log("receiverID", receiverId);
     // check if receivers exists
     if (!receiverId) {
       logger.error("Please provide a receiver id you want to chat with");
@@ -51,7 +51,7 @@ export const create_open_conversation = async (req, res, next) => {
 export const getConversations = async (req, res, next) => {
   try {
     const userId = req.user.userId;
-    console.log(chalk.red(userId));
+    // console.log(chalk.red(userId));
     const conversations = await getUserConversations(userId);
     res.status(200).json(conversations);
   } catch (error) {
