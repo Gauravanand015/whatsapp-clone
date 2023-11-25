@@ -1,8 +1,10 @@
 import app from "./app.js";
+import { Server } from "socket.io";
 import logger from "./config/logger.config.js";
 import mongoose from "mongoose";
-
+import SocketServer from "./utils/socketDetails.js";
 const PORT = process.env.PORT || 8000;
+const CLIENT_ENDPOINT = process.env.CLIENT_ENDPOINT;
 
 //exit on mongodb error
 mongoose.connection.on("error", (err) => {
@@ -25,7 +27,22 @@ mongoose
     logger.info("Connected to MongoDB");
   });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   logger.info(`${process.env.NODE_ENV}`);
   logger.info(`Server is listening at ${PORT}...`);
+});
+
+// socket.io connection
+
+const io = new Server(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: CLIENT_ENDPOINT,
+  },
+});
+
+io.on("connection", (socket) => {
+  // console.log(socket);
+  logger.info("socket.io connected successfully");
+  SocketServer(socket);
 });
