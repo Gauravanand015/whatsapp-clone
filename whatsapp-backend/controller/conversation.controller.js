@@ -11,7 +11,7 @@ export const create_open_conversation = async (req, res, next) => {
   try {
     const senderId = req.user.userId;
     const { receiverId } = req.body; // to whom i am sending messages
-    // console.log("receiverID", receiverId);
+
     // check if receivers exists
     if (!receiverId) {
       logger.error("Please provide a receiver id you want to chat with");
@@ -26,11 +26,10 @@ export const create_open_conversation = async (req, res, next) => {
     if (existed_conversation) {
       res.send(existed_conversation);
     } else {
-      const receiver_user_detail = await findUser(receiverId);
-
+      // const receiver_user_detail = await findUser(receiverId);
       let convoData = {
-        name: receiver_user_detail.name,
-        picture: receiver_user_detail.picture,
+        name: "Conversation name",
+        picture: "Conversation picture",
         isGroup: false,
         users: [senderId, receiverId],
       };
