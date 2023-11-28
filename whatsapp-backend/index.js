@@ -44,5 +44,5 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   // console.log(socket);
   logger.info("socket.io connected successfully");
-  SocketServer(socket);
+  SocketServer(socket, io);
 });
