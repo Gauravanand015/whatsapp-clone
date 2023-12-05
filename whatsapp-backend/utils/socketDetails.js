@@ -22,8 +22,10 @@ export default function (socket, io) {
       );
       // console.log(chalk.red(`this ${socket.id} is disconnected`));
       io.emit("get-online-user", onlineUsers);
-
       //! we are using [io] because as the users got disconnected the socket disconnects too so it is impossible to emit something, to rectify the problem we are using [io] instead
+
+      // send Socket id
+      io.emit("setUp socketId", socket.id);
     });
   });
 
@@ -44,7 +46,7 @@ export default function (socket, io) {
   // typing messages
   socket.on("typing", (conversation) => {
     console.log(`this ${conversation} is typing`);
-    socket.in(conversation).emit("typing");
+    socket.in(conversation).emit("typing", conversation);
   });
 
   // stop typing
