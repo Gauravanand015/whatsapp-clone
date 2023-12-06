@@ -3,55 +3,84 @@ import chalk from "chalk";
 let onlineUsers = [];
 
 export default function (socket, io) {
+  // Event handler for "join" event
   socket.on("join", (user) => {
     socket.join(user);
 
-    // add joined user to online users
+    // Add joined user to online users if not already present
     if (!onlineUsers.some((onlineUser) => onlineUser.userId === user)) {
-      // console.log(chalk.red(`this ${user} is online`));
+      console.log(chalk.red(`User ${user} is online`));
       onlineUsers.push({ userId: user, socketId: socket.id });
     }
 
-    // send online user to frontend
+    // Send online user list to frontend
     io.emit("get-online-user", onlineUsers);
 
-    // socket disconnects
+    // Event handler for socket disconnects
     socket.on("disconnect", () => {
       onlineUsers = onlineUsers.filter(
         (onlineUser) => onlineUser.socketId !== socket.id
       );
-      // console.log(chalk.red(`this ${socket.id} is disconnected`));
-      io.emit("get-online-user", onlineUsers);
-      //! we are using [io] because as the users got disconnected the socket disconnects too so it is impossible to emit something, to rectify the problem we are using [io] instead
 
-      // send Socket id
-      io.emit("setUp socketId", socket.id);
+      // Emit updated online user list to all connected clients
+      io.emit("get-online-user", onlineUsers);
+
+      // Send socket ID to all connected clients
+      io.emit("setup socket", socket.id);
     });
   });
 
-  // join conversation room
+  // Event handler for "join conversation" event
   socket.on("join conversation", (conversation) => {
     socket.join(conversation);
   });
-  // send and receive messages
+
+  // Event handler for "send message" event
   socket.on("send message", (message) => {
     let conversation = message.conversation;
     if (!conversation.users) return;
+
+    // Broadcast the message to all users in the conversation except the sender
     conversation.users.forEach((user) => {
       if (user._id === message.sender._id) return;
       socket.in(user._id).emit("receive message", message);
     });
   });
 
-  // typing messages
+  // Event handler for "typing" event
   socket.on("typing", (conversation) => {
-    console.log(`this ${conversation} is typing`);
     socket.in(conversation).emit("typing", conversation);
   });
 
-  // stop typing
+  // Event handler for "stop typing" event
   socket.on("stop typing", (conversation) => {
-    console.log(`this ${conversation} stopped typing`);
     socket.in(conversation).emit("stop typing");
+  });
+
+  // Event handler for "call user" event
+  socket.on("call user", (data) => {
+    console.log(data);
+    const userId = data.userToCall;
+    console.log("USER ID", userId);
+    console.log("ONLINE USERS", onlineUsers);
+
+    // Find the user in onlineUsers based on userId
+    const userSocket = onlineUsers.find((user) => user.userId === userId);
+
+    // Handle case where the user is not found
+    if (!userSocket) {
+      console.log(`User with ID ${userId} is not online.`);
+      return;
+    }
+
+    console.log("USER SOCKET ID", userSocket.socketId);
+
+    // Emit "call user" event to the specific user
+    io.to(userSocket.socketId).emit("call user", {
+      signal: data.signal,
+      form: data.from,
+      name: data.name,
+      picture: data.picture,
+    });
   });
 }
